@@ -1,0 +1,153 @@
+---
+import { experience, skills } from '../data/work';
+---
+
+<section class="section" id="experience" aria-labelledby="experience-title">
+  <div class="container exp-layout">
+    <header class="exp-head" data-reveal>
+      <p class="eyebrow">Experience</p>
+      <h2 class="section-title" id="experience-title">Ten years of shipping, still learning</h2>
+      <p class="section-lead">
+        I’ve moved between games, VR, enterprise platforms and the web, and I’m still learning. What stays the same is the question I start from: who’s going to use this, and what will get in their way?
+      </p>
+
+      <div class="skills">
+        {
+          skills.map((s) => (
+            <div class="skill-group">
+              <h3>{s.group}</h3>
+              <ul>
+                {s.items.map((item) => (
+                  <li class="chip">{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </header>
+
+    <ol class="timeline">
+      {
+        experience.map((e, i) => (
+          <li class="timeline-item" data-reveal style={`--delay:${i * 0.08}s`}>
+            <p class="timeline-period">{e.period}</p>
+            <h3 class="timeline-title">{e.title}</h3>
+            <p class="timeline-org">
+              {e.org} <span>· {e.place}</span>
+            </p>
+            <p class="timeline-text">{e.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .exp-layout {
+    display: grid;
+    gap: clamp(3rem, 6vw, 6rem);
+  }
+
+  @media (min-width: 60rem) {
+    .exp-layout {
+      grid-template-columns: 1fr 1.1fr;
+      align-items: start;
+    }
+
+    .exp-head {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+
+  .skills {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .skill-group h3 {
+    font-size: var(--step--1);
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .skill-group ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .skill-group .chip {
+    color: var(--text);
+  }
+
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: 2.75rem;
+    padding: 0 0 0 2rem;
+    list-style: none;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.35rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(var(--peach), var(--crimson) 40%, var(--navy-500));
+  }
+
+  .timeline-item {
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: calc(-2rem + 0.35rem - 5px);
+    top: 0.45rem;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--peach);
+  }
+
+  .timeline-period {
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--peach);
+  }
+
+  .timeline-title {
+    font-size: var(--step-1);
+    margin-top: 0.3rem;
+  }
+
+  .timeline-org {
+    margin-top: 0.2rem;
+    font-weight: 500;
+  }
+
+  .timeline-org span {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .timeline-text {
+    margin-top: 0.6rem;
+    color: var(--text-muted);
+  }
+</style>

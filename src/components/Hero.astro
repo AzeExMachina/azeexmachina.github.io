@@ -1,0 +1,170 @@
+---
+import { site } from '../data/site';
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <canvas class="hero-canvas" aria-hidden="true" data-horizon></canvas>
+  <div class="hero-fade" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <p class="eyebrow hero-eyebrow">{site.role} · {site.location}</p>
+    <h1 id="hero-title" class="hero-title">
+      Davide <span>“{site.alias}”</span> Aldegheri
+    </h1>
+    <p class="hero-tagline">{site.tagline}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#work">See my work</a>
+      <a class="btn btn-ghost" href={site.resume} download>Download résumé ↓</a>
+    </div>
+  </div>
+
+  <a class="scroll-cue" href="#work" aria-label="Scroll to work">
+    <span></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-end;
+    padding-block: 7rem clamp(5rem, 12vh, 8rem);
+    overflow: hidden;
+    isolation: isolate;
+    /* Fallback to an horizon gradient if WebGL is not supported*/
+    background: linear-gradient(
+      180deg,
+      var(--wine) 0%,
+      var(--crimson) 26%,
+      #e46a5f 38%,
+      var(--peach) 42%,
+      #8e7477 48%,
+      var(--navy-500) 56%,
+      var(--navy-700) 70%,
+      var(--navy-900) 100%
+    );
+  }
+
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease);
+  }
+
+  .hero-canvas.is-ready {
+    opacity: 1;
+  }
+
+  .hero-fade {
+    position: absolute;
+    inset: auto 0 0;
+    height: 45%;
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+  }
+
+  .hero-eyebrow {
+    color: var(--peach);
+  }
+
+  .hero-title {
+    font-size: var(--step-4);
+    font-weight: 600;
+    margin-top: 1rem;
+    max-width: 14ch;
+  }
+
+  .hero-title span {
+    color: var(--peach);
+    font-weight: 400;
+  }
+
+  .hero-tagline {
+    margin-top: 1.25rem;
+    font-size: var(--step-1);
+    color: var(--text-muted);
+    max-width: 36ch;
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .hero-content > * {
+    animation: rise 1s var(--ease) both;
+  }
+
+  .hero-content > :nth-child(2) {
+    animation-delay: 0.08s;
+  }
+
+  .hero-content > :nth-child(3) {
+    animation-delay: 0.16s;
+  }
+
+  .hero-content > :nth-child(4) {
+    animation-delay: 0.24s;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  .scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem;
+    translate: -50% 0;
+    width: 1.5rem;
+    height: 2.4rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-pill);
+  }
+
+  .scroll-cue span {
+    position: absolute;
+    left: 50%;
+    top: 0.45rem;
+    width: 3px;
+    height: 0.5rem;
+    translate: -50% 0;
+    border-radius: 2px;
+    background: var(--peach);
+    animation: cue 2s var(--ease) infinite;
+  }
+
+  @keyframes cue {
+    60% {
+      transform: translateY(0.7rem);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (max-height: 40rem) {
+    .scroll-cue {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { startHorizon } from '../scripts/horizon';
+
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-horizon]');
+  if (canvas) startHorizon(canvas);
+</script>
