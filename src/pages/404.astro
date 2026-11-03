@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found · Davide Aldegheri">
+  <main id="main" class="nf">
+    <p class="eyebrow">404</p>
+    <h1>This frame failed to render ಥ_ಥ</h1>
+    <a class="btn btn-primary" href="/">Back to the mothership</a>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    background: radial-gradient(60% 40% at 50% 100%, var(--wine), transparent);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+  }
+</style>

@@ -1,0 +1,268 @@
+---
+import { Image } from 'astro:assets';
+import { games } from '../data/games';
+import { site } from '../data/site';
+
+const filters = ['All', ...new Set(games.flatMap((g) => g.tags))].filter((t) =>
+  ['All', 'VR', '3D', 'Unity'].includes(t),
+);
+---
+
+<section class="section games" id="games" aria-labelledby="games-title">
+  <div class="container">
+    <header class="games-head" data-reveal>
+      <div>
+        <p class="eyebrow">Games</p>
+        <h2 class="section-title" id="games-title">Made in 48 hours, give or take</h2>
+        <p class="section-lead">
+          Game jams are where I prototype fast: gameplay, VR interactions and VFX, built with small
+          teams against the clock
+        </p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter games">
+        {
+          filters.map((f, i) => (
+            <button type="button" class="filter" data-filter={f} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {f}
+            </button>
+          ))
+        }
+      </div>
+    </header>
+
+    <ul class="game-grid">
+      {
+        games.map((game, i) => (
+          <li class="game" data-tags={game.tags.join('|')} data-reveal style={`--delay:${(i % 3) * 0.08}s`}>
+            <a class="game-link" href={game.url} target="_blank" rel="noopener">
+              <div class="game-media">
+                {game.video ? (
+                  <video
+                    src={game.video}
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Image
+                    src={game.cover}
+                    alt=""
+                    widths={[400, 720]}
+                    sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 45vw, 92vw"
+                    loading="lazy"
+                  />
+                )}
+                {game.award && <span class="game-award">★ {game.award}</span>}
+              </div>
+              <div class="game-body">
+                <p class="game-meta">
+                  {game.jam} · {game.year}
+                  {game.role && <> · {game.role}</>}
+                </p>
+                <h3 class="game-title">
+                  {game.title}
+                  <span class="arrow" aria-hidden="true">↗</span>
+                </h3>
+                <p class="game-pitch">{game.pitch}</p>
+                <ul class="game-tags" aria-label="Tags">
+                  {game.tags.map((t) => (
+                    <li class="chip">{t}</li>
+                  ))}
+                </ul>
+              </div>
+              <span class="sr-only">(opens itch.io in a new tab)</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="games-more" data-reveal>
+      More on <a href={site.links.itch} target="_blank" rel="noopener">itch.io ↗</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .games {
+    background: linear-gradient(180deg, var(--bg), color-mix(in oklab, var(--wine) 22%, var(--bg)) 50%, var(--bg));
+  }
+
+  .games-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter {
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: var(--step--1);
+    cursor: pointer;
+    transition:
+      background-color 0.25s,
+      color 0.25s,
+      border-color 0.25s;
+  }
+
+  .filter:hover {
+    color: var(--text);
+    border-color: var(--navy-500);
+  }
+
+  .filter[aria-pressed='true'] {
+    background: var(--peach);
+    border-color: var(--peach);
+    color: var(--navy-900);
+    font-weight: 600;
+  }
+
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .game[hidden] {
+    display: none;
+  }
+
+  .game-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+      transform 0.5s var(--ease),
+      border-color 0.5s var(--ease),
+      box-shadow 0.5s var(--ease);
+  }
+
+  .game-link:hover,
+  .game-link:focus-visible {
+    transform: translateY(-6px);
+    border-color: color-mix(in oklab, var(--peach) 40%, transparent);
+    box-shadow: 0 24px 48px -24px color-mix(in oklab, var(--crimson) 60%, transparent);
+  }
+
+  .game-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--navy-900);
+  }
+
+  .game-media :is(img, video) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .game-link:hover .game-media :is(img, video) {
+    transform: scale(1.05);
+  }
+
+  .game-award {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    background: var(--crimson);
+    color: #fff;
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .game-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .game-meta {
+    font-size: var(--step--1);
+    color: var(--peach);
+  }
+
+  .game-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--step-1);
+    margin-top: 0.35rem;
+  }
+
+  .arrow {
+    color: var(--text-muted);
+    transition:
+      transform 0.4s var(--ease),
+      color 0.4s;
+  }
+
+  .game-link:hover .arrow {
+    color: var(--peach);
+    transform: translate(3px, -3px);
+  }
+
+  .game-pitch {
+    margin-top: 0.6rem;
+    font-size: 0.95em;
+    color: var(--text-muted);
+  }
+
+  .game-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding: 1.25rem 0 0;
+    list-style: none;
+  }
+
+  .games-more {
+    margin-top: 2.5rem;
+    text-align: center;
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter');
+  const cards = document.querySelectorAll<HTMLElement>('.game');
+
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.filter!;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      cards.forEach((card) => {
+        card.hidden = tag !== 'All' && !card.dataset.tags!.split('|').includes(tag);
+      });
+    }),
+  );
+</script>

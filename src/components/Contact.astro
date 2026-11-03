@@ -1,0 +1,198 @@
+---
+import { ArrowUpRight, Check, Copy, Download, Send } from '@lucide/astro';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+const [mailUser, mailDomain] = site.email.split('@');
+---
+
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <div class="container contact-inner" data-reveal>
+    <p class="eyebrow">Contact</p>
+    <h2 class="contact-title" id="contact-title">
+      Have a hard rendering problem? <span>Let’s talk.</span>
+    </h2>
+    <div class="mail-actions" data-mail data-user={mailUser} data-domain={mailDomain}>
+      <a class="btn btn-primary btn-lg" href="#contact" data-mail-link>
+        <Send size={20} aria-hidden="true" />
+        Reach out
+      </a>
+      <button type="button" class="btn btn-ghost btn-icon" data-mail-copy aria-label="Copy email address">
+        <Copy class="icon-copy" size={20} aria-hidden="true" />
+        <Check class="icon-check" size={20} aria-hidden="true" />
+      </button>
+      <span class="copy-status" role="status" aria-live="polite" data-mail-status></span>
+    </div>
+    <noscript>
+      <p class="mail-fallback">{mailUser} [at] {mailDomain}</p>
+    </noscript>
+
+    <ul class="socials">
+      <li>
+        <a class="btn btn-ghost" href={site.resume} download>
+          <Download size={18} aria-hidden="true" /> Résumé (PDF)
+        </a>
+      </li>
+      <li>
+        <a class="btn btn-ghost" href={site.links.github} target="_blank" rel="noopener">
+          GitHub <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+      </li>
+      <li>
+        <a class="btn btn-ghost" href={site.links.linkedin} target="_blank" rel="noopener">
+          LinkedIn <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+      </li>
+      <li>
+        <a class="btn btn-ghost" href={site.links.itch} target="_blank" rel="noopener">
+          itch.io <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <footer class="container footer">
+    <p>© {year} {site.name}</p>
+    <p class="footer-quote">“All things in nature occur mathematically.” · Descartes</p>
+  </footer>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    padding-top: clamp(5rem, 12vw, 10rem);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: auto -10% -40% -10%;
+    height: 90%;
+    z-index: -1;
+    background: radial-gradient(50% 60% at 50% 100%, var(--peach) 0%, var(--crimson) 35%, var(--wine) 60%, transparent 80%);
+    opacity: 0.35;
+    filter: blur(20px);
+  }
+
+  .contact-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-title {
+    font-size: var(--step-3);
+    margin-top: 1rem;
+    max-width: 18ch;
+  }
+
+  .contact-title span {
+    color: var(--peach);
+  }
+
+  .mail-actions {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    gap: 0.6rem;
+    margin-top: 2.5rem;
+  }
+
+  .btn-lg {
+    padding: 1rem 1.9rem;
+    font-size: var(--step-1);
+  }
+
+  .btn-icon {
+    justify-content: center;
+    flex: none;
+    width: 4.3rem;
+    padding: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .btn-icon :global(.icon-check),
+  .btn-icon.is-copied :global(.icon-copy) {
+    display: none;
+  }
+
+  .btn-icon.is-copied :global(.icon-check) {
+    display: block;
+    color: var(--peach);
+  }
+
+  .copy-status {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 50%;
+    translate: -50% 0;
+    font-size: var(--step--1);
+    color: var(--peach);
+    white-space: nowrap;
+  }
+
+  .mail-fallback {
+    margin-top: 1rem;
+    color: var(--text-muted);
+  }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 3rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    margin-top: clamp(5rem, 12vw, 9rem);
+    padding-block: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .footer-quote {
+    font-style: italic;
+  }
+</style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-mail]');
+  if (box) {
+    const address = `${box.dataset.user}@${box.dataset.domain}`;
+    const link = box.querySelector<HTMLAnchorElement>('[data-mail-link]')!;
+    const copy = box.querySelector<HTMLButtonElement>('[data-mail-copy]')!;
+    const status = box.querySelector<HTMLElement>('[data-mail-status]')!;
+    let timer = 0;
+
+    link.href = `mailto:${address}`;
+    link.title = address;
+
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(address);
+        status.textContent = 'Mail copied to clipboard';
+      } catch {
+        status.textContent = address;
+      }
+      copy.classList.add('is-copied');
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        copy.classList.remove('is-copied');
+        status.textContent = '';
+      }, 2500);
+    });
+  }
+</script>
