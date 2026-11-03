@@ -4,6 +4,8 @@ Personal portfolio built with [Astro](https://astro.build), plain CSS and a smal
 
 ## Palette
 
+| Token | Hex |
+|---|---|
 | Navy 900 | `#161E2F` |
 | Navy 700 | `#242F49` |
 | Navy 500 | `#384358` |
