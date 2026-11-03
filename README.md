@@ -1,8 +1,6 @@
 # davidealdegheri.dev
 
-Personal portfolio of Davide "Aze" Aldegheri: Senior Software Engineer focused on real-time graphics, 3D and interactive systems.
-
-Built with [Astro](https://astro.build), plain CSS and a small WebGL shader for the hero. No UI framework, almost no client-side JavaScript.
+Personal portfolio built with [Astro](https://astro.build), plain CSS and a small WebGL shader for the hero. No UI framework, almost no client-side JavaScript.
 
 ## Palette
 
