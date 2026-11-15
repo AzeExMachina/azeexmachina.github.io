@@ -6,6 +6,7 @@ import onirica from '../assets/games/onirica.png';
 import caffeinship from '../assets/games/caffeinship.png';
 import loupe from '../assets/games/loupe.png';
 import storyOfYourLife from '../assets/games/story-of-your-life.png';
+import luckOfTheDraw from '../assets/games/luck-of-the-draw.png';
 
 export interface Game {
   title: string;
@@ -21,6 +22,17 @@ export interface Game {
 }
 
 export const games: Game[] = [
+  {
+    title: 'Luck of the Draw',
+    jam: 'Official Unity Game Jam',
+    year: 2026,
+    pitch:
+      'A top-down shooter where one lucky number, picked from 1 to 1000, sets your lucky shots, dodges, loot and kill-streak jackpot.',
+    tags: ['3D', 'Shooter', 'Unity'],
+    url: 'https://aze-ex-machina.itch.io/luck-of-the-draw',
+    cover: luckOfTheDraw,
+    role: 'Programmer'
+  },
   {
     title: 'Brok-e',
     jam: 'Global Game Jam',
