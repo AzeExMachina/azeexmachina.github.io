@@ -100,6 +100,11 @@ a {
   border-radius: 4px;
 }
 
+/* Sections focused by in-page links shouldn't get an outline around the whole block */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
 ::selection {
   background: var(--crimson);
   color: #fff;
