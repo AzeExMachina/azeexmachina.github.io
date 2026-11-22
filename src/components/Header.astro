@@ -1,4 +1,5 @@
 ---
+import { Menu, X } from '@lucide/astro';
 import { nav, site } from '../data/site';
 ---
 
@@ -12,18 +13,53 @@ import { nav, site } from '../data/site';
       <ul class="nav-list">
         {
           nav.map((item) => (
-            <li>
-              <a href={item.href}>{item.label}</a>
+            <li class="nav-section">
+              <a href={item.href} data-spy>{item.label}</a>
             </li>
           ))
         }
         <li>
           <a class="nav-resume" href={site.resume} download>Résumé</a>
         </li>
+        <li class="nav-menu">
+          <button
+            type="button"
+            class="menu-toggle"
+            aria-label="Menu"
+            aria-expanded="false"
+            aria-controls="site-menu"
+            aria-haspopup="dialog"
+          >
+            <Menu size={22} aria-hidden="true" />
+          </button>
+        </li>
       </ul>
     </nav>
   </div>
 </header>
+
+<dialog class="sheet" id="site-menu" aria-label="Site menu">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <p class="sheet-title" aria-hidden="true">Menu</p>
+      <button type="button" class="sheet-close" aria-label="Close menu">
+        <X size={22} aria-hidden="true" />
+      </button>
+    </div>
+    <ul class="sheet-list">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} data-spy>{item.label}</a>
+          </li>
+        ))
+      }
+      <li>
+        <a class="sheet-resume" href={site.resume} download>Download résumé (PDF)</a>
+      </li>
+    </ul>
+  </div>
+</dialog>
 
 <style>
   .header {
@@ -32,7 +68,8 @@ import { nav, site } from '../data/site';
     z-index: 50;
     transition:
       background-color 0.4s var(--ease),
-      border-color 0.4s var(--ease);
+      border-color 0.4s var(--ease),
+      transform 0.35s var(--ease);
     border-bottom: 1px solid transparent;
   }
 
@@ -40,6 +77,10 @@ import { nav, site } from '../data/site';
     background: color-mix(in oklab, var(--navy-900) 80%, transparent);
     backdrop-filter: blur(14px);
     border-bottom-color: var(--border);
+  }
+
+  .header.is-hidden {
+    transform: translateY(-100%);
   }
 
   .header-inner {
@@ -53,7 +94,10 @@ import { nav, site } from '../data/site';
   .logo {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
     color: var(--text);
     text-decoration: none;
     font-family: var(--font-display);
@@ -74,12 +118,20 @@ import { nav, site } from '../data/site';
 
   .nav-list {
     display: flex;
-    gap: clamp(0.75rem, 3vw, 2rem);
+    align-items: center;
+    gap: clamp(0.25rem, 2vw, 1.25rem);
     list-style: none;
     padding: 0;
   }
 
+  /* Links keep their small look but get a 44px tap area */
   .nav-list a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding-inline: 0.35rem;
     color: var(--text-muted);
     text-decoration: none;
     font-size: var(--step--1);
@@ -87,53 +139,263 @@ import { nav, site } from '../data/site';
     transition: color 0.2s;
   }
 
-  .nav-list {
-    align-items: center;
-  }
-
   .nav-list a:hover {
     color: var(--accent);
   }
 
+  .nav-list a[aria-current='true'] {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.4em;
+  }
+
+  /* The pill is drawn by ::before so the link itself can be 44px tall */
   .nav-list .nav-resume {
-    padding: 0.35rem 0.9rem;
+    position: relative;
+    isolation: isolate;
+    padding-inline: 0.9rem;
+    color: var(--peach);
+  }
+
+  .nav-resume::before {
+    content: '';
+    position: absolute;
+    inset: 0.6rem 0;
+    z-index: -1;
     border: 1px solid color-mix(in oklab, var(--peach) 50%, transparent);
     border-radius: var(--radius-pill);
-    color: var(--peach);
-    transition:
-      background-color 0.2s,
-      color 0.2s;
+    transition: background-color 0.2s;
   }
 
   .nav-list .nav-resume:hover {
-    background: var(--peach);
     color: var(--navy-900);
   }
 
-  @media (max-width: 30rem) {
-    .nav-list {
-      gap: 0.6rem;
-    }
+  .nav-resume:hover::before {
+    background: var(--peach);
+  }
 
-    .nav-list a {
-      font-size: 0.8rem;
-    }
+  .nav-menu {
+    display: none;
+  }
 
-    .nav-list .nav-resume {
-      padding: 0.25rem 0.6rem;
-    }
+  .menu-toggle,
+  .sheet-close {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+  }
+
+  .menu-toggle:hover,
+  .sheet-close:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   @media (max-width: 40rem) {
-    .logo-name {
+    .header-inner {
+      height: 3.75rem;
+    }
+
+    .logo-name,
+    .nav-section {
       display: none;
     }
+
+    .nav-menu {
+      display: block;
+    }
+  }
+
+  /* Bottom sheet */
+  .sheet {
+    width: 100%;
+    max-width: 100%;
+    max-height: 85dvh;
+    margin: auto 0 0;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--surface);
+    color: var(--text);
+    transition:
+      transform 0.35s var(--ease),
+      overlay 0.35s allow-discrete,
+      display 0.35s allow-discrete;
+    transform: translateY(100%);
+  }
+
+  .sheet[open] {
+    transform: none;
+  }
+
+  @starting-style {
+    .sheet[open] {
+      transform: translateY(100%);
+    }
+  }
+
+  .sheet::backdrop {
+    background: rgb(0 0 0 / 0.55);
+  }
+
+  .sheet-inner {
+    padding: 0.75rem var(--gutter) calc(1.25rem + env(safe-area-inset-bottom));
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+  }
+
+  .sheet-title {
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .sheet-list {
+    padding: 0;
+    list-style: none;
+  }
+
+  .sheet-list li + li {
+    border-top: 1px solid var(--border);
+  }
+
+  .sheet-list a {
+    display: flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding-inline: 0.75rem;
+    border-radius: 0.6rem;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .sheet-list a:hover,
+  .sheet-list a[aria-current='true'] {
+    color: var(--accent);
+  }
+
+  .sheet-list a[aria-current='true'] {
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .sheet-list .sheet-resume {
+    color: var(--peach);
+    font-family: inherit;
+    font-size: var(--step-0);
+  }
+
+  :global(html:has(.sheet[open])) {
+    overflow: hidden;
   }
 </style>
 
 <script>
-  const header = document.querySelector('[data-header]');
-  const update = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle')!;
+  const sheet = document.querySelector<HTMLDialogElement>('#site-menu')!;
+  const phone = matchMedia('(max-width: 40rem)');
+
+  // Bottom sheet
+  let closedByLink = false;
+
+  toggle.addEventListener('click', () => {
+    closedByLink = false;
+    sheet.showModal();
+    toggle.setAttribute('aria-expanded', 'true');
+  });
+
+  sheet.querySelector('.sheet-close')!.addEventListener('click', () => sheet.close());
+
+  // A click on the dialog itself (not its content) is a click on the backdrop.
+  sheet.addEventListener('click', (e) => {
+    if (e.target === sheet) sheet.close();
+  });
+
+  // Close first, then let the click bubble to the document handler in Base.astro, which scrolls.
+  sheet.querySelectorAll('a').forEach((link) =>
+    link.addEventListener('click', () => {
+      closedByLink = true;
+      sheet.close();
+    }),
+  );
+
+  sheet.addEventListener('close', () => {
+    toggle.setAttribute('aria-expanded', 'false');
+    if (!closedByLink) toggle.focus();
+  });
+
+  phone.addEventListener('change', () => {
+    if (!phone.matches && sheet.open) sheet.close();
+  });
+
+  // Background on scroll, and hide while scrolling down on phones
+  let anchorY = window.scrollY;
+
+  const update = () => {
+    const y = window.scrollY;
+    header.classList.toggle('is-scrolled', y > 24);
+
+    const canHide = phone.matches && !sheet.open && !header.contains(document.activeElement);
+    if (y <= 200 || y < anchorY) {
+      header.classList.remove('is-hidden');
+      anchorY = y;
+    } else if (y - anchorY > 8) {
+      if (canHide) header.classList.add('is-hidden');
+      anchorY = y;
+    }
+  };
   update();
   window.addEventListener('scroll', update, { passive: true });
+  header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
+
+  // Scroll-spy: mark the section crossing the middle of the screen
+  const spyLinks = document.querySelectorAll<HTMLAnchorElement>('a[data-spy]');
+  let current: string | null = null;
+
+  const setCurrent = (id: string | null) => {
+    current = id;
+    spyLinks.forEach((link) => {
+      if (link.getAttribute('href') === `#${id}`) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  };
+
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) setCurrent(entry.target.id);
+        else if (entry.target.id === current) setCurrent(null);
+      }
+    },
+    { rootMargin: '-45% 0px -55% 0px' },
+  );
+
+  new Set([...spyLinks].map((link) => link.getAttribute('href')!.slice(1))).forEach((id) => {
+    const section = document.getElementById(id);
+    if (section) spy.observe(section);
+  });
 </script>

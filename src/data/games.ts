@@ -19,6 +19,8 @@ export interface Game {
   video?: string;
   role?: string;
   award?: string;
+  /** Shown on phones before "Show all games" is tapped. */
+  featured?: boolean;
 }
 
 export const games: Game[] = [
@@ -31,7 +33,8 @@ export const games: Game[] = [
     tags: ['3D', 'Shooter', 'Unity'],
     url: 'https://aze-ex-machina.itch.io/luck-of-the-draw',
     cover: luckOfTheDraw,
-    role: 'Programmer'
+    role: 'Programmer',
+    featured: true
   },
   {
     title: 'Brok-e',
@@ -77,7 +80,8 @@ export const games: Game[] = [
     cover: undivided,
     video: '/media/undivided.mp4',
     role: 'Programmer',
-    award: 'Best Mood Mojo'
+    award: 'Best Mood Mojo',
+    featured: true
   },
   {
     title: 'The Story of Your Life',
@@ -111,6 +115,7 @@ export const games: Game[] = [
     url: 'https://aze-ex-machina.itch.io/the-caffeinship',
     cover: caffeinship,
     role: 'Programmer',
-    award: 'Best 2D Graphic'
+    award: 'Best 2D Graphic',
+    featured: true
   },
 ];
