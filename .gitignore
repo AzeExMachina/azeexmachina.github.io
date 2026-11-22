@@ -78,6 +78,7 @@ __debug_bin*
 .DS_Store
 .idea
 .claude
+CLAUDE.md
 .astro/
 
 # Local compiler baselines and test output

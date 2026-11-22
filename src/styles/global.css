@@ -53,8 +53,15 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5rem; /* header height + 0.5rem */
   -webkit-text-size-adjust: 100%;
+}
+
+/* Keep in sync with the header height in Header.astro (3.75rem on phones, 4.5rem above) */
+@media (max-width: 40rem) {
+  html {
+    scroll-padding-top: 4.25rem;
+  }
 }
 
 body {

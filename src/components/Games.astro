@@ -30,10 +30,16 @@ const filters = ['All', ...new Set(games.flatMap((g) => g.tags))].filter((t) =>
       </div>
     </header>
 
-    <ul class="game-grid">
+    <ul class="game-grid" id="game-grid">
       {
         games.map((game, i) => (
-          <li class="game" data-tags={game.tags.join('|')} data-reveal style={`--delay:${(i % 3) * 0.08}s`}>
+          <li
+            class="game"
+            data-tags={game.tags.join('|')}
+            data-extra={game.featured ? undefined : ''}
+            data-reveal
+            style={`--delay:${(i % 3) * 0.08}s`}
+          >
             <a class="game-link" href={game.url} target="_blank" rel="noopener">
               <div class="game-media">
                 {game.video ? (
@@ -80,6 +86,12 @@ const filters = ['All', ...new Set(games.flatMap((g) => g.tags))].filter((t) =>
       }
     </ul>
 
+    <div class="games-expand">
+      <button type="button" class="btn btn-ghost show-all" aria-expanded="false" aria-controls="game-grid">
+        Show all {games.length} games
+      </button>
+    </div>
+
     <p class="games-more" data-reveal>
       More on <a href={site.links.itch} target="_blank" rel="noopener">itch.io ↗</a>
     </p>
@@ -106,6 +118,7 @@ const filters = ['All', ...new Set(games.flatMap((g) => g.tags))].filter((t) =>
   }
 
   .filter {
+    min-height: 2.75rem;
     padding: 0.45rem 1rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-pill);
@@ -245,6 +258,56 @@ const filters = ['All', ...new Set(games.flatMap((g) => g.tags))].filter((t) =>
     list-style: none;
   }
 
+  .games-expand {
+    display: none;
+  }
+
+  .show-all {
+    min-height: 2.75rem;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  @media (max-width: 40rem) {
+    /* Phones: filters cost more space than they save with so few cards */
+    .filters {
+      display: none;
+    }
+
+    /* Show only featured games until "Show all" is tapped. Without JS every game stays visible. */
+    :global(.js) .game-grid:not(.is-expanded) .game[data-extra] {
+      display: none;
+    }
+
+    :global(.js) .games-expand:not([hidden]) {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .game-media {
+      aspect-ratio: 16 / 9;
+    }
+
+    .game-body {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .game-pitch {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .game-tags {
+      padding-top: 1rem;
+    }
+  }
+
   .games-more {
     margin-top: 2.5rem;
     text-align: center;
@@ -265,4 +328,18 @@ const filters = ['All', ...new Set(games.flatMap((g) => g.tags))].filter((t) =>
       });
     }),
   );
+
+  const grid = document.querySelector<HTMLElement>('#game-grid');
+  const showAll = document.querySelector<HTMLButtonElement>('.show-all');
+
+  showAll?.addEventListener('click', () => {
+    if (!grid) return;
+    const extras = grid.querySelectorAll<HTMLElement>('.game[data-extra]');
+    grid.classList.add('is-expanded');
+    showAll.setAttribute('aria-expanded', 'true');
+    // The reveal observer never saw these while they were display: none; show them straight away.
+    extras.forEach((card) => card.classList.add('is-visible'));
+    showAll.parentElement!.hidden = true;
+    extras[0]?.querySelector<HTMLAnchorElement>('.game-link')?.focus();
+  });
 </script>

@@ -133,6 +133,13 @@ import { site } from '../data/site';
     border-radius: var(--radius-pill);
   }
 
+  /* Invisible 48×54px tap area around the small pill */
+  .scroll-cue::after {
+    content: '';
+    position: absolute;
+    inset: -0.5rem -0.75rem;
+  }
+
   .scroll-cue span {
     position: absolute;
     left: 50%;

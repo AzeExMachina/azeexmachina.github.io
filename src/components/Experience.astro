@@ -11,7 +11,9 @@ import { experience, skills } from '../data/work';
         I’ve moved between games, VR, enterprise platforms and the web, and I’m still learning. What stays the same is the question I start from: who’s going to use this, and what will get in their way?
       </p>
 
-      <div class="skills">
+      <details class="skills-details" open>
+        <summary>Skills and languages</summary>
+        <div class="skills">
         {
           skills.map((s) => (
             <div class="skill-group">
@@ -24,7 +26,8 @@ import { experience, skills } from '../data/work';
             </div>
           ))
         }
-      </div>
+        </div>
+      </details>
     </header>
 
     <ol class="timeline">
@@ -62,10 +65,60 @@ import { experience, skills } from '../data/work';
     }
   }
 
+  .skills-details {
+    margin-top: 2.5rem;
+  }
+
   .skills {
     display: grid;
     gap: 1.5rem;
-    margin-top: 2.5rem;
+  }
+
+  .skills-details summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3rem;
+    padding: 0 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    transition: border-color 0.2s;
+  }
+
+  .skills-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .skills-details summary::after {
+    content: '+';
+    color: var(--peach);
+    font-size: var(--step-1);
+    line-height: 1;
+  }
+
+  .skills-details[open] summary::after {
+    content: '−';
+  }
+
+  .skills-details summary:hover {
+    border-color: var(--accent);
+  }
+
+  /* On larger screens the skills are always shown, so the toggle is hidden */
+  @media (width > 40rem) {
+    .skills-details summary {
+      display: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .skills-details[open] .skills {
+      margin-top: 1.5rem;
+    }
   }
 
   .skill-group h3 {
@@ -151,3 +204,14 @@ import { experience, skills } from '../data/work';
     color: var(--text-muted);
   }
 </style>
+
+<script>
+  // Open by default so the skills show without JS; collapse them on phones.
+  const details = document.querySelector<HTMLDetailsElement>('.skills-details');
+  const phone = matchMedia('(max-width: 40rem)');
+  const sync = () => {
+    if (details) details.open = !phone.matches;
+  };
+  sync();
+  phone.addEventListener('change', sync);
+</script>
