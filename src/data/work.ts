@@ -57,7 +57,7 @@ export const skills = [
 
 export const experience = [
   {
-    period: '2016 — Today',
+    period: '2016 — 2026',
     title: 'Team Lead & Software Developer',
     org: 'CT Innovation S.r.l.',
     place: 'Verona, Italy',
