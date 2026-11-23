@@ -68,8 +68,33 @@ import { site } from '../data/site';
     background: linear-gradient(to bottom, transparent, var(--bg));
   }
 
+  /* Frosted chip so the label stays legible wherever the shader's
+     peach horizon band lands at the current viewport size */
   .hero-eyebrow {
     color: var(--peach);
+    padding: 0.5em 1em;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: color-mix(in oklab, var(--navy-900) 65%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    max-width: 100%;
+    line-height: 1.4;
+  }
+
+  .hero-eyebrow::before {
+    width: 1rem;
+  }
+
+  /* Small phones: drop the dash and loosen tracking so it fits on one line */
+  @media (max-width: 30rem) {
+    .hero-eyebrow {
+      letter-spacing: 0.08em;
+    }
+
+    .hero-eyebrow::before {
+      display: none;
+    }
   }
 
   .hero-title {
