@@ -1,0 +1,208 @@
+---
+import { Image } from 'astro:assets';
+import { projects } from '../data/projects';
+---
+
+<section class="section" id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <header data-reveal>
+      <p class="eyebrow">Side projects</p>
+      <h2 class="section-title" id="projects-title">Off the clock</h2>
+      <p class="section-lead">
+        What I build when nobody's asked me to
+      </p>
+    </header>
+
+    <div class="project-list">
+      {
+        projects.map((project) => (
+          <article class:list={['project-card', { 'has-image': project.image }]} data-reveal>
+            {project.image && (
+              <div class="project-media">
+                <Image
+                  src={project.image.src}
+                  alt={project.image.alt}
+                  widths={[480, 960]}
+                  sizes="(min-width: 60rem) 30rem, 92vw"
+                  loading="lazy"
+                />
+              </div>
+            )}
+            <div class="project-body">
+              <div class="project-meta">
+                <p class="project-kicker">{project.kicker}</p>
+                {project.status && <span class="chip project-status">{project.status}</span>}
+              </div>
+              <h3 class="project-title">{project.title}</h3>
+              <p class="project-summary">{project.summary}</p>
+              <ul class="project-highlights">
+                {project.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+              <ul class="project-stack" aria-label="Technologies">
+                {project.stack.map((s) => (
+                  <li class="chip">{s}</li>
+                ))}
+              </ul>
+              <div class="project-links">
+                {project.links.map((link) => (
+                  <a
+                    class:list={['btn', link.primary ? 'btn-primary' : 'btn-ghost']}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {link.label} <span aria-hidden="true">↗</span>
+                    <span class="sr-only">(opens in a new tab)</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .project-list {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .project-card {
+    position: relative;
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 80% at 100% 0%, color-mix(in oklab, var(--wine) 55%, transparent), transparent 60%),
+      var(--surface);
+    overflow: hidden;
+    transition:
+      transform 0.5s var(--ease),
+      border-color 0.5s var(--ease);
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--crimson), var(--peach));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .project-card:hover {
+    border-color: color-mix(in oklab, var(--peach) 35%, transparent);
+  }
+
+  .project-card:hover::after {
+    transform: scaleX(1);
+  }
+
+  .project-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .project-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 65ch;
+  }
+
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .project-kicker {
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--peach);
+  }
+
+  .project-status {
+    border-color: color-mix(in oklab, var(--peach) 45%, transparent);
+    color: var(--peach);
+  }
+
+  .project-title {
+    font-size: var(--step-2);
+    margin-top: 0.5rem;
+  }
+
+  .project-summary {
+    margin-top: 1rem;
+    color: var(--text-muted);
+  }
+
+  .project-highlights {
+    display: grid;
+    gap: 0.6rem;
+    margin-block: 1.5rem 2rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .project-highlights li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.95em;
+  }
+
+  .project-highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 0.6rem;
+    height: 2px;
+    background: var(--crimson);
+  }
+
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .project-links .btn {
+    min-height: 44px;
+  }
+
+  @media (min-width: 60rem) {
+    .project-card.has-image {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .project-card.has-image .project-media {
+      order: 2;
+    }
+  }
+</style>
